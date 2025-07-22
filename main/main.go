@@ -69,15 +69,15 @@ func main() {
 
 	tableData := listener.TableData{
 		"users": {
-			"email": "email",
-			"id":    "id_in_project",
-			"name":  "name",
-			"phone": "phone",
+			"mail":         "email",
+			"id":           "id_in_project",
+			"username":     "name",
+			"phone_number": "phone",
 		},
 		"user_details": {
-			"user_id":   "id_in_project",
-			"birthday":  "birthday",
-			"wp_credit": "special_fields.wp_credit",
+			"user_id":    "id_in_project",
+			"birth_date": "birthday",
+			"wp_credit":  "special_fields.wp_credit",
 		},
 	}
 
@@ -87,6 +87,8 @@ func main() {
 		"http://localhost:8080/api/v1/customer/callback",
 		"de677ca7-308e-4a4c-ae20-deb813e30158",
 	)
+
+	listener.SetupTriggersFromTableData(db, tableData)
 
 	select {}
 
