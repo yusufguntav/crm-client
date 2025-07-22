@@ -9,6 +9,7 @@ import (
 	"strings"
 
 	"github.com/lib/pq"
+	"gorm.io/gorm"
 )
 
 func StartDatabaseListener(tableData TableData, dsn, crmURL, projectSecret string) {
@@ -92,7 +93,6 @@ func sendCallback(body map[string]interface{}, crmURL, secret string) {
 		return
 	}
 
-	// Gönderilecek JSON'u logla
 	log.Printf("Giden callback isteği: URL=%s\nBody=%s", crmURL, string(data))
 
 	req, err := http.NewRequest("POST", crmURL, bytes.NewBuffer(data))
@@ -103,7 +103,6 @@ func sendCallback(body map[string]interface{}, crmURL, secret string) {
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("ProjectSecretKey", secret)
 
-	// Header'ları logla
 	for k, v := range req.Header {
 		log.Printf("Header: %s = %s\n", k, v)
 	}
@@ -116,4 +115,70 @@ func sendCallback(body map[string]interface{}, crmURL, secret string) {
 	}
 	defer resp.Body.Close()
 	log.Printf("Callback sonucu: %v", resp.Status)
+}
+
+func SetupTriggersFromTableData(db *gorm.DB, tableData TableData) error {
+	for tableName, columns := range tableData {
+		triggerFuncSQL := fmt.Sprintf(`
+		CREATE OR REPLACE FUNCTION notify_%s_change()
+		RETURNS TRIGGER AS $$
+		DECLARE
+			payload JSON;
+		BEGIN
+			-- DELETE işlemi
+			IF TG_OP = 'DELETE' THEN
+				payload := json_build_object(%s);
+				PERFORM pg_notify('%s_changes', payload::text);
+				RETURN OLD;
+			END IF;
+
+			-- INSERT veya UPDATE işlemi
+			IF TG_OP = 'INSERT' OR TG_OP = 'UPDATE' THEN
+				payload := json_build_object(%s);
+				PERFORM pg_notify('%s_changes', payload::text);
+				RETURN NEW;
+			END IF;
+
+			RETURN NULL;
+		END;
+		$$ LANGUAGE plpgsql;
+		`,
+			tableName,
+			buildPayload(columns, "OLD"),
+			tableName,
+			buildPayload(columns, "NEW"),
+			tableName,
+		)
+
+		if err := db.Exec(triggerFuncSQL).Error; err != nil {
+			return fmt.Errorf("trigger function error on table %s: %w", tableName, err)
+		}
+
+		triggerSQL := fmt.Sprintf(`
+		DROP TRIGGER IF EXISTS %s_change_trigger ON %s;
+		CREATE TRIGGER %s_change_trigger
+		AFTER INSERT OR UPDATE OR DELETE ON %s
+		FOR EACH ROW EXECUTE FUNCTION notify_%s_change();
+		`,
+			tableName, tableName,
+			tableName,
+			tableName, tableName,
+		)
+
+		if err := db.Exec(triggerSQL).Error; err != nil {
+			return fmt.Errorf("trigger creation error on table %s: %w", tableName, err)
+		}
+	}
+	return nil
+}
+
+func buildPayload(columns map[string]any, scope string) string {
+	var parts []string
+	parts = append(parts, `'table', TG_TABLE_NAME`, `'operation', TG_OP`)
+
+	for colName := range columns {
+		parts = append(parts, fmt.Sprintf("'%s', %s.%s", colName, scope, colName))
+	}
+
+	return strings.Join(parts, ",\n")
 }
