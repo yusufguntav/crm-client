@@ -21,7 +21,6 @@ func StartDatabaseListener(tableData TableData, dsn, crmURL, projectSecret strin
 
 	listener := pq.NewListener(dsn, 10, 30, reportProblem)
 
-	// Her tablo için ayrı kanal dinle
 	for tableName := range tableData {
 		if err := listener.Listen(fmt.Sprintf("%s_changes", tableName)); err != nil {
 			log.Fatalf("Listen hatası (%s): %v", tableName, err)
@@ -93,8 +92,6 @@ func sendCallback(body map[string]interface{}, crmURL, secret string) {
 		return
 	}
 
-	log.Printf("Giden callback isteği: URL=%s\nBody=%s", crmURL, string(data))
-
 	req, err := http.NewRequest("POST", crmURL, bytes.NewBuffer(data))
 	if err != nil {
 		log.Println("Callback isteği hazırlanamadı:", err)
@@ -103,10 +100,6 @@ func sendCallback(body map[string]interface{}, crmURL, secret string) {
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("ProjectSecretKey", secret)
 
-	for k, v := range req.Header {
-		log.Printf("Header: %s = %s\n", k, v)
-	}
-
 	client := &http.Client{}
 	resp, err := client.Do(req)
 	if err != nil {
@@ -114,7 +107,6 @@ func sendCallback(body map[string]interface{}, crmURL, secret string) {
 		return
 	}
 	defer resp.Body.Close()
-	log.Printf("Callback sonucu: %v", resp.Status)
 }
 
 func SetupTriggersFromTableData(db *gorm.DB, tableData TableData) error {
