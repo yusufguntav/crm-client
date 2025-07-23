@@ -12,7 +12,7 @@ import (
 	"gorm.io/gorm"
 )
 
-func (c *Client) StartDatabaseListener(tableData TableData, dsn, crmURL, projectSecret string) {
+func (c *Client) StartDatabaseListener(tableData TableData, dsn, crmURL string) {
 	reportProblem := func(ev pq.ListenerEventType, err error) {
 		if err != nil {
 			log.Println("Listener hatası:", err)
@@ -38,7 +38,7 @@ func (c *Client) StartDatabaseListener(tableData TableData, dsn, crmURL, project
 						log.Println("JSON parse hatası:", err)
 						continue
 					}
-					handleDynamicNotify(extra, tableData, crmURL, projectSecret)
+					handleDynamicNotify(extra, tableData, crmURL, c.ProjectKey)
 				}
 			}
 		}
@@ -110,7 +110,7 @@ func sendCallback(body map[string]interface{}, crmURL, secret string) {
 	defer resp.Body.Close()
 }
 
-func SetupTriggersFromTableData(db *gorm.DB, tableData TableData) error {
+func (c *Client) SetupTriggersFromTableData(db *gorm.DB, tableData TableData) error {
 	for tableName, columns := range tableData {
 		triggerFuncSQL := fmt.Sprintf(`
 		CREATE OR REPLACE FUNCTION notify_%s_change()
