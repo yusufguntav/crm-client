@@ -1,4 +1,4 @@
-package listener
+package crmclient
 
 import (
 	"bytes"
@@ -12,7 +12,7 @@ import (
 	"gorm.io/gorm"
 )
 
-func StartDatabaseListener(tableData TableData, dsn, crmURL, projectSecret string) {
+func (c *Client) StartDatabaseListener(tableData TableData, dsn, crmURL, projectSecret string) {
 	reportProblem := func(ev pq.ListenerEventType, err error) {
 		if err != nil {
 			log.Println("Listener hatası:", err)
@@ -20,6 +20,7 @@ func StartDatabaseListener(tableData TableData, dsn, crmURL, projectSecret strin
 	}
 
 	listener := pq.NewListener(dsn, 10, 30, reportProblem)
+	crmURL = c.BaseURL + crmURL
 
 	for tableName := range tableData {
 		if err := listener.Listen(fmt.Sprintf("%s_changes", tableName)); err != nil {

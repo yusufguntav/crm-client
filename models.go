@@ -29,3 +29,6 @@ type TicketPayload struct {
 	Title               string `json:"title"`
 	Description         string `json:"description,omitempty"`
 }
+
+// Table name, key and val
+type TableData map[string]map[string]any
