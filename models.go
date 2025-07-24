@@ -20,11 +20,10 @@ type TransactionPayload struct {
 	Amount     float64 `json:"amount"`
 	Note       string  `json:"note"`
 	BankInfo   int8    `json:"bank_info"`
-	PackageID  *uint   `json:"package_id"`
+	PackageKey string  `json:"package_key"`
 }
 
 type TicketPayload struct {
-	ProjectKey          string `json:"project_key"`
 	CustomerIDInProject string `json:"customer_id_in_project"`
 	Title               string `json:"title"`
 	Description         string `json:"description,omitempty"`
