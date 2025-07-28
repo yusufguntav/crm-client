@@ -21,6 +21,7 @@ type TransactionPayload struct {
 	Note       string  `json:"note"`
 	BankInfo   int8    `json:"bank_info"`
 	PackageKey string  `json:"package_key"`
+	Currency   string  `json:"currency"`
 }
 
 type TicketPayload struct {
