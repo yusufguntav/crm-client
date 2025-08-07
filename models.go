@@ -10,6 +10,7 @@ type CustomerPayload struct {
 	IDInProject   string         `json:"id_in_project"`
 	Name          string         `json:"name"`
 	CompanyName   string         `json:"company_name"`
+	CompanyID     string         `json:"company_id_in_project"`
 	BirthDay      string         `json:"birthday"`
 	Phone         string         `json:"phone"`
 	SpecialFields []SpecialField `json:"special_fields"`
