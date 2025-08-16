@@ -14,6 +14,7 @@ type CustomerPayload struct {
 	BirthDay      string         `json:"birthday"`
 	Phone         string         `json:"phone"`
 	IsSubUser     *bool          `json:"is_sub_user"`
+	ParentUserID  string         `json:"parent_user_id"`
 	SpecialFields []SpecialField `json:"special_fields"`
 }
 
