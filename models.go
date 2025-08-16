@@ -13,6 +13,7 @@ type CustomerPayload struct {
 	CompanyID     string         `json:"company_id_in_project"`
 	BirthDay      string         `json:"birthday"`
 	Phone         string         `json:"phone"`
+	IsSubUser     *bool          `json:"is_sub_user"`
 	SpecialFields []SpecialField `json:"special_fields"`
 }
 
