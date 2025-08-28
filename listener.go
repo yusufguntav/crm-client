@@ -61,22 +61,39 @@ func handleDynamicNotify(extra map[string]interface{}, tableData TableData, crmU
 	var specialFields []map[string]interface{}
 
 	for column, targetField := range columns {
-		value, exists := extra[column]
+		v, exists := extra[column]
 		if !exists {
 			log.Printf("Kolon (%s) veride bulunamadı.", column)
 			continue
 		}
 
-		valueStr := fmt.Sprintf("%v", value)
+		tf := fmt.Sprintf("%v", targetField)
 
-		if strings.HasPrefix(targetField.(string), "special_fields.") {
-			fieldName := strings.TrimPrefix(targetField.(string), "special_fields.")
+		// nil → "", sayılar → kayıpsız, diğerleri → string
+		var valueStr string
+		switch t := v.(type) {
+		case nil:
+			valueStr = ""
+		case json.Number:
+			valueStr = t.String()
+		case bool:
+			if t {
+				valueStr = "true"
+			} else {
+				valueStr = "false"
+			}
+		default:
+			valueStr = fmt.Sprintf("%v", t)
+		}
+
+		if strings.HasPrefix(tf, "special_fields.") {
+			fieldName := strings.TrimPrefix(tf, "special_fields.")
 			specialFields = append(specialFields, map[string]interface{}{
 				"field": fieldName,
 				"value": valueStr,
 			})
 		} else {
-			body[targetField.(string)] = valueStr
+			body[tf] = valueStr
 		}
 	}
 
