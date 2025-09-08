@@ -7,10 +7,10 @@ type SpecialField struct {
 
 type CustomerPayload struct {
 	Email         string         `json:"email"`
-	IDInProject   string         `json:"id_in_project"`
+	IDInProject   string         `json:"id_in_project"` // Personel id (personelin sistemdeki id'si)
 	Name          string         `json:"name"`
 	CompanyName   string         `json:"company_name"`
-	CompanyID     string         `json:"company_id_in_project"`
+	CompanyID     string         `json:"company_id_in_project"` // Firma id (firmanin sistemdeki id'si)
 	BirthDay      string         `json:"birthday"`
 	Phone         string         `json:"phone"`
 	IsSubUser     *bool          `json:"is_sub_user"`
