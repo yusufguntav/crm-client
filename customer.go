@@ -10,8 +10,7 @@ func (c *Client) UpsertCustomer(payload CustomerPayload) error {
 	return c.sendJSON(url, payload)
 }
 
-func (c *Client) DeleteCustomer(idInProject string) error {
+func (c *Client) DeleteCustomer(payload CustomerDeletePayload) error {
 	url := fmt.Sprintf("%s/api/v1/customer/callback", c.BaseURL)
-	body := map[string]string{"id_in_project": idInProject}
-	return c.sendJSON(url, body, http.MethodDelete)
+	return c.sendJSON(url, payload, http.MethodDelete)
 }

@@ -16,19 +16,28 @@ type CustomerPayload struct {
 	IsSubUser     *bool          `json:"is_sub_user"`
 	ParentUserID  string         `json:"parent_user_id"`
 	SpecialFields []SpecialField `json:"special_fields"`
+	CreatedAt     string         `json:"created_at"`
+}
+
+type CustomerDeletePayload struct {
+	IDInProject  string `json:"id_in_project"` // Personel id (personelin sistemdeki id'si)
+	IsSubUser    *bool  `json:"is_sub_user"`
+	ParentUserID string `json:"parent_user_id"`
 }
 
 type TransactionPayload struct {
-	CustomerID string  `json:"customer_id"`
-	Amount     float64 `json:"amount"`
-	Note       string  `json:"note"`
-	BankInfo   int8    `json:"bank_info"`
-	PackageKey string  `json:"package_key"`
-	Currency   string  `json:"currency"`
+	CustomerID   string  `json:"customer_id"`
+	IsSubUser    *bool   `json:"is_sub_user"`
+	ParentUserID string  `json:"parent_user_id"`
+	Amount       float64 `json:"amount"`
+	Note         string  `json:"note"`
+	BankInfo     int8    `json:"bank_info"`
+	PackageKey   string  `json:"package_key"`
+	Currency     string  `json:"currency"`
 }
 
 type TicketPayload struct {
-	CustomerIDInProject string `json:"customer_id_in_project"`
+	CustomerIDInProject string `json:"customer_id_in_project"` // main user id, not subuser
 	Title               string `json:"title"`
 	Description         string `json:"description,omitempty"`
 }
