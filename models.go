@@ -30,6 +30,7 @@ type TransactionPayload struct {
 	BankInfo   int8    `json:"bank_info"`
 	PackageKey string  `json:"package_key"`
 	Currency   string  `json:"currency"`
+	CreatedAt  string  `json:"created_at"`
 }
 
 type TicketPayload struct {
