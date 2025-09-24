@@ -24,13 +24,14 @@ type CustomerDeletePayload struct {
 }
 
 type TransactionPayload struct {
-	CustomerID string  `json:"customer_id"`
-	Amount     float64 `json:"amount"`
-	Note       string  `json:"note"`
-	BankInfo   int8    `json:"bank_info"`
-	PackageKey string  `json:"package_key"`
-	Currency   string  `json:"currency"`
-	CreatedAt  string  `json:"created_at"`
+	CustomerID    string                 `json:"customer_id"`
+	Amount        float64                `json:"amount"`
+	Note          string                 `json:"note"`
+	BankInfo      int8                   `json:"bank_info"`
+	PackageKey    string                 `json:"package_key"`
+	Currency      string                 `json:"currency"`
+	CreatedAt     string                 `json:"created_at"`
+	SpecialFields map[string]interface{} `json:"special_fields"` // JSON object
 }
 
 type TicketPayload struct {
