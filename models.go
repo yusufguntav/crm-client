@@ -19,6 +19,7 @@ type CustomerPayload struct {
 	ParentUserID  string         `json:"parent_user_id"`
 	SpecialFields []SpecialField `json:"special_fields"`
 	CreatedAt     string         `json:"created_at"`
+	AgentID       uint           `json:"agent_id"`
 }
 
 type CustomerDeletePayload struct {
