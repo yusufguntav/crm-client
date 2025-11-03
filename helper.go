@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"io"
 	"net/http"
 )
 
@@ -28,8 +29,11 @@ func (c *Client) sendJSON(url string, body any, methodOverride ...string) error 
 	}
 	defer resp.Body.Close()
 
+	respBody, _ := io.ReadAll(resp.Body)
+
 	if resp.StatusCode >= 300 {
-		return fmt.Errorf("unexpected response code: %d", resp.StatusCode)
+		return fmt.Errorf("unexpected response code: %d, message: %s", resp.StatusCode, string(respBody))
 	}
+
 	return nil
 }
