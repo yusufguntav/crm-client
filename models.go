@@ -11,6 +11,7 @@ type CustomerPayload struct {
 	Name          string         `json:"name"`
 	Surname       string         `json:"surname"`
 	CompanyName   string         `json:"company_name"`
+	CompanyPhone  string         `json:"company_phone"`
 	CompanyID     string         `json:"company_id_in_project"` // Firma id (firmanin sistemdeki id'si)
 	BirthDay      string         `json:"birthday"`
 	Phone         string         `json:"phone"`
