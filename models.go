@@ -21,6 +21,8 @@ type CustomerPayload struct {
 	SpecialFields []SpecialField `json:"special_fields"`
 	CreatedAt     string         `json:"created_at"`
 	AgentID       uint           `json:"agent_id"`
+	AgentCode     string         `json:"agent_code"`
+	CampaignCode  string         `json:"campaign_code"`
 }
 
 type CustomerDeletePayload struct {
