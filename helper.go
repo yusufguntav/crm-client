@@ -23,6 +23,10 @@ func (c *Client) sendJSON(url string, body any, methodOverride ...string) error 
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("ProjectSecretKey", c.ProjectKey)
 
+	if c.TicketKey != "" {
+		req.Header.Set("TicketKey", c.TicketKey)
+	}
+
 	resp, err := c.httpClient.Do(req)
 	if err != nil {
 		return err

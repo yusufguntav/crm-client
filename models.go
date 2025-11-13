@@ -45,7 +45,10 @@ type TransactionPayload struct {
 type TicketPayload struct {
 	CustomerIDInProject string `json:"customer_id_in_project"` // main user id, not subuser
 	Title               string `json:"title"`
-	Description         string `json:"description,omitempty"`
+	Name                string `json:"name"`
+	Phone               string `json:"phone"`
+	Description         string `json:"description"`
+	TicketKey           string `json:"-"`
 }
 
 // Table name, key and val

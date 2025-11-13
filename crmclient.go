@@ -10,6 +10,7 @@ var defaultBaseURL = "https://apicrm.vatansoft.net"
 type Client struct {
 	BaseURL    string
 	ProjectKey string
+	TicketKey  string
 	httpClient *http.Client
 }
 
