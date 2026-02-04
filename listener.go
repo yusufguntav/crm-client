@@ -12,7 +12,7 @@ import (
 	"gorm.io/gorm"
 )
 
-func (c *Client) StartDatabaseListener(tableData TableData, dsn, crmURL string) {
+func (c *Client) StartDatabaseListener(tableData TableData, dsn, crmURL string, keyCondition func(extra map[string]interface{}) string) {
 	reportProblem := func(ev pq.ListenerEventType, err error) {
 		if err != nil {
 			log.Println("Listener hatası:", err)
@@ -38,6 +38,16 @@ func (c *Client) StartDatabaseListener(tableData TableData, dsn, crmURL string) 
 						log.Println("JSON parse hatası:", err)
 						continue
 					}
+
+					if keyCondition != nil {
+						if keyCondition(extra) == "" {
+							log.Println("Key condition sağlanmadı, atlanıyor.")
+							continue
+						} else {
+							c.ProjectKey = keyCondition(extra)
+						}
+					}
+
 					handleDynamicNotify(extra, tableData, crmURL, c.ProjectKey)
 				}
 			}
