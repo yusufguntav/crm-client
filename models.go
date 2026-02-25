@@ -51,5 +51,21 @@ type TicketPayload struct {
 	TicketKey           string `json:"-"`
 }
 
+type SenderNamePayload struct {
+	SenderName       string `json:"sender_name"`
+	CustomerID       string `json:"customer_id"`
+	Status           *int8  `json:"status"` // 0: pending, 1: approved, 2: rejected
+	ServiceSendCount *uint  `json:"service_send_count"`
+}
+
+type SmsCancelPayload struct {
+	CustomerID string `json:"customer_id"` // required
+	SenderName string `json:"sender_name"` // required
+	Keyword    string `json:"keyword"`     // required
+	Status     *int8  `json:"status"`      // 0: pending, 1: approved, 2: rejected
+	IsMailsent *bool  `json:"is_mail_sent"`
+	ExpireDate string `json:"expire_date"`
+}
+
 // Table name, key and val
 type TableData map[string]map[string]any
