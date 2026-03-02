@@ -2,7 +2,7 @@ package crmclient
 
 import "fmt"
 
-func (c *Client) SendTransaction(payload TransactionPayload) error {
+func (c *Client) SendTransaction(payload TransactionPayload, projectKey string) error {
 	url := fmt.Sprintf("%s/api/v1/customer/transaction/callback", c.BaseURL)
-	return c.sendJSON(url, payload)
+	return c.sendJSON(url, payload, projectKey)
 }
