@@ -175,10 +175,19 @@ func (c *Client) SetupTriggersFromTableData(db *gorm.DB, tableData TableData) er
 		}
 
 		triggerSQL := fmt.Sprintf(`
-		DROP TRIGGER IF EXISTS %s_change_trigger ON %s;
-		CREATE TRIGGER %s_change_trigger
-		AFTER INSERT OR UPDATE OR DELETE ON %s
-		FOR EACH ROW EXECUTE FUNCTION notify_%s_change();
+		DO $$
+			BEGIN
+			IF NOT EXISTS (
+				SELECT 1 FROM pg_trigger
+				WHERE tgname = '%s_change_trigger'
+				AND tgrelid = '%s'::regclass
+				AND NOT tgisinternal
+			) THEN
+				CREATE TRIGGER %s_change_trigger
+				AFTER INSERT OR UPDATE OR DELETE ON %s
+				FOR EACH ROW EXECUTE FUNCTION notify_%s_change();
+			END IF;
+		END $$;
 		`,
 			tableName, tableName,
 			tableName,
